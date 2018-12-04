@@ -13,16 +13,20 @@ echo 8 >revolver.txt
 
 X=$1
 posListe=1
-if [ posListe -ne 8 ]; then
+if [ $posListe -ne 8 ]; then
 	PIDprochain= $(sed -n "$posListe$p" < ./listePID.txt)
-else;
+else
 	posListe=1
-	PISprochain= $(sed -n "posListe$p" < ./listePID.txt)
-trap "kill PIDprochain" 31
+	PIDprochain= $(sed -n "posListe$p" < ./listePID.txt)
+fi
+
+trap "kill -USR2 PIDprochain" USR2
+trap "echo $PIDprochain" USR2
+trap "echo le joueur $1 est mort" USR1
 
 for ((i=0;i<X;i++)); do
     ./joueur.sh $$ &
-    kill -31 $!
+    kill -USR2 $!
     echo $! >listePID.txt
 done
 
